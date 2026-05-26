@@ -1,4 +1,4 @@
-#include "inicio/iniciowindow.h"
+#include "escenario/pantallas/iniciowindow.h"
 #include <QIcon>
 #include <QApplication>
 

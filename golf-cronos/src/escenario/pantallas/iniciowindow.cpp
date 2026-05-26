@@ -6,6 +6,7 @@ InicioWindow::InicioWindow(QWidget *parent)
     , ui(new Ui::InicioWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Golf En El Paneta Cronos");
 }
 
 InicioWindow::~InicioWindow()
