@@ -38,7 +38,7 @@ Respondamos al las preguntas que van de la mano con las entidades que interviene
 ## Agente
 
 
-## Impilsor gravitatorio
+## Impulsor gravitatorio
 
 
 
