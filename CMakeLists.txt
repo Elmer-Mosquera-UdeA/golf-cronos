@@ -10,7 +10,7 @@ qt_standard_project_setup()
 qt_add_executable(golf-cronos
     WIN32 MACOSX_BUNDLE
     src/main.cpp
-    recursos.qrc
+    src/recursos.qrc
     src/escenario/pantallas/iniciowindow.h src/escenario/pantallas/iniciowindow.cpp src/escenario/pantallas/iniciowindow.ui
     src/cerebro/gestorbasedatos.h src/cerebro/gestorbasedatos.cpp
 )
