@@ -19,10 +19,12 @@ private:
     Ui::ModosGameWidget *ui;
 
 signals:
+    void jugarModUno();
     void sesionCerrada();
 
 private slots:
     void on_btn_exitAth_clicked();
+    void on_btn_modoU_clicked();
 };
 
 #endif // MODOSGAMEWIDGET_H

@@ -27,3 +27,7 @@ void ModosGameWidget::on_btn_exitAth_clicked()
 
     emit sesionCerrada();
 }
+
+void ModosGameWidget::on_btn_modoU_clicked() {
+    emit jugarModUno();
+}

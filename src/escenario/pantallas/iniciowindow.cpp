@@ -26,7 +26,7 @@ InicioWindow::InicioWindow(QWidget *parent)
     LoginWidget *pantallaLogin = new LoginWidget(this);
     RegistrarseWidget *pantallaRegistrarse = new RegistrarseWidget(this);
     ModosGameWidget *pantallaModosJuego = new ModosGameWidget(this);
-    JuegoModUnoWidget *pantallaJuegoModUno = new JuegoModUnoWidget(this);
+
 
     ui->stackedWidget->addWidget(pantallaPortada); // 0
     ui->stackedWidget->addWidget(pantallaLogin);  // 1
@@ -34,7 +34,7 @@ InicioWindow::InicioWindow(QWidget *parent)
     ui->stackedWidget->addWidget(pantallaModosJuego); // 3
 
 
-    ui->stackedWidget->addWidget(pantallaJuegoModUno); // -- TODO: Cambiar a carga peresoza
+
 
     // Mostramos
     ui->stackedWidget->setCurrentIndex(0);
@@ -65,6 +65,18 @@ InicioWindow::InicioWindow(QWidget *parent)
 
     connect(pantallaModosJuego,&ModosGameWidget::sesionCerrada,this,[this](){
         ui->stackedWidget->setCurrentIndex(0);
+    });
+
+    connect(pantallaModosJuego,&ModosGameWidget::jugarModUno,this,[this]() {
+        // 1. Crear el objeto bajo demanda
+        JuegoModUnoWidget *pantallaJuegoModUno = new JuegoModUnoWidget(this);
+
+        // Indicar a Qt que libere la memoria RAM cuando el objeto se cierre o destruya
+        pantallaJuegoModUno->setAttribute(Qt::WA_DeleteOnClose);
+
+        // 3. Añadir y mostrar
+        ui->stackedWidget->addWidget(pantallaJuegoModUno);
+        ui->stackedWidget->setCurrentWidget(pantallaJuegoModUno);
     });
 }
 
