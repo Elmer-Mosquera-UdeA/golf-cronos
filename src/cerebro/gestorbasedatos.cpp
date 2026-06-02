@@ -1,98 +1,152 @@
 #include "gestorbasedatos.h"
+#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QStandardPaths>
 #include <QDir>
 
-// --- CONSTRUCTOR ---
-GestorBaseDatos::GestorBaseDatos() {
-    // 1. Instanciar el driver nativo de SQLite
-    db = QSqlDatabase::addDatabase("QSQLITE");
+bool GestorBaseDatos::conectarBD() {
+    // Si ya existe la conexión, no hacemos nada duplicate
+    if (QSqlDatabase::contains("qt_sql_default_connection")) {
+        return true;
+    }
 
-    // 2. Definir la ruta del archivo local
-    QString rutaDb = QDir::currentPath() + "/cronos_data.sqlite";
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+    QString rutaCarpeta = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(rutaCarpeta);
+    QString rutaDb = rutaCarpeta + "/cronos_data.sqlite";
     db.setDatabaseName(rutaDb);
 
-    // 3. Abrir la conexión
     if (!db.open()) {
         qDebug() << "Error crítico: No se pudo conectar a la BD:" << db.lastError().text();
-    } else {
-        qDebug() << "Conexión a SQLite exitosa.";
-        inicializarTablas(); // Nos aseguramos de que las tablas existan
+        return false;
     }
+
+    QSqlQuery query;
+    query.exec("PRAGMA foreign_keys = ON;");
+
+    qDebug() << "Conexión a SQLite exitosa en:" << rutaDb;
+    return inicializarTablas();
 }
 
-// --- DESTRUCTOR ---
-GestorBaseDatos::~GestorBaseDatos() {
-    if (db.isOpen()) {
-        db.close();
-        qDebug() << "Conexión a SQLite cerrada de forma segura.";
-    }
-}
-
-// --- INICIALIZAR TABLAS ---
 bool GestorBaseDatos::inicializarTablas() {
     QSqlQuery query;
-    // Tabla Jugador con los valores por defecto que definimos para Crono Golf
+
     QString sqlJugador = R"(
         CREATE TABLE IF NOT EXISTS Jugador (
             id_jugador TEXT PRIMARY KEY,
             pin_secreto TEXT NOT NULL,
-            vidas INTEGER DEFAULT 5,
-            nivel_actual INTEGER DEFAULT 0,
+            vidas INTEGER DEFAULT 5 CHECK(vidas >= 0),
             puntuacion_total INTEGER DEFAULT 0
-        )
+        );
     )";
+
+    // 2. Tabla de Progreso (Modo Uno)
+    QString sqlProgresoModUno = R"(
+        CREATE TABLE IF NOT EXISTS ProgresoModUno (
+            id_jugador TEXT,
+            id_nivel INTEGER NOT NULL CHECK(id_nivel BETWEEN 1 AND 4),
+            golpes_realizados INTEGER DEFAULT 0,
+            mejor_tiempo_segundos INTEGER,
+            PRIMARY KEY (id_jugador, id_nivel),
+            FOREIGN KEY (id_jugador) REFERENCES Jugador(id_jugador)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        );
+    )";
+
+
+    // TODO - MODO 2
+
+    // sqlProgresoModUno -> ProgresoModUno
 
     if (!query.exec(sqlJugador)) {
         qDebug() << "Error creando tabla Jugador:" << query.lastError().text();
         return false;
     }
+
+    if (!query.exec(sqlProgresoModUno)) {
+        qDebug() << "Error creando tabla ProgresoModUno:" << query.lastError().text();
+        return false;
+    }
     return true;
 }
 
-// --- MÉTODO: REGISTRAR JUGADOR ---
 bool GestorBaseDatos::registrarJugador(const QString& idJugador, const QString& pin) {
     QSqlQuery query;
 
-    // Preparamos la consulta SQL para evitar inyecciones y errores de sintaxis
-    query.prepare("INSERT INTO Jugador (id_jugador, pin_secreto) VALUES (:id, :pin)");
+    if (idJugador.isEmpty() || pin.isEmpty()){
+        qDebug() << "No se pueden dejar los campos en blanco";
+        return false;
+    }
 
-    // Enlazamos las variables de C++ a los marcadores de la consulta SQL
+    query.prepare("INSERT INTO Jugador (id_jugador, pin_secreto) VALUES (:id, :pin)");
     query.bindValue(":id", idJugador);
     query.bindValue(":pin", pin);
 
-    // Ejecutamos la inserción
     if (query.exec()) {
-        qDebug() << "¡Éxito! Jugador registrado en Cronos:" << idJugador;
+        qDebug() << "¡Éxito! Jugador registrado:" << idJugador;
         return true;
-    } else {
-        // Si falla (por ejemplo, si el id_jugador ya existe debido a la PRIMARY KEY)
-        qDebug() << "Fallo al registrar (¿El identificador ya existe?):" << query.lastError().text();
-        return false;
     }
+    qDebug() << "Fallo al registrar:" << query.lastError().text();
+    return false;
 }
 
-// --- MÉTODO: VALIDAR ACCESO ---
 bool GestorBaseDatos::validarAcceso(const QString& idJugador, const QString& pin) {
     QSqlQuery query;
-
-    // Buscamos si existe una fila que coincida exactamente con el ID y el PIN
     query.prepare("SELECT id_jugador FROM Jugador WHERE id_jugador = :id AND pin_secreto = :pin");
     query.bindValue(":id", idJugador);
     query.bindValue(":pin", pin);
 
-    if (query.exec()) {
-        // query.next() avanza al primer resultado. Si hay al menos uno, devuelve true.
-        if (query.next()) {
-            qDebug() << "Acceso concedido. Bienvenido de nuevo:" << idJugador;
+    if (query.exec() && query.next()) {
+        m_jugadorActivo = idJugador;
+        qDebug() << "Acceso concedido:" << idJugador;
+        return true;
+    }
+    qDebug() << "Acceso denegado o error.";
+    return false;
+}
+
+bool GestorBaseDatos::exitAuth()
+{
+    m_jugadorActivo = "";
+    qDebug() << "¡Secion cerrada!";
+    return true;
+}
+
+QString GestorBaseDatos::obtenerJugadorActivo()  {
+    return m_jugadorActivo;
+}
+
+bool GestorBaseDatos::retomarJuego(const QString &idJugador, const QString &modoJuego)
+{
+    QSqlQuery query;
+
+    if (modoJuego == "ModoUno") {
+        // Buscamos el nivel máximo alcanzado o guardado por el jugador
+        query.prepare("SELECT MAX(id_nivel) FROM ProgresoModUno WHERE id_jugador = :id");
+        query.bindValue(":id", idJugador);
+
+        if (query.exec() && query.next()) {
+            // Si el resultado es nulo, significa que nunca ha jugado el Modo Uno
+            if (query.value(0).isNull()) {
+                qDebug() << "El jugador no tiene progreso en Modo Uno. Empezará desde el nivel 1.";
+                return false;
+            }
+
+            int ultimoNivel = query.value(0).toInt();
+            qDebug() << "Retomando Modo Uno para" << idJugador << "en el nivel:" << ultimoNivel;
             return true;
-        } else {
-            qDebug() << "Acceso denegado: Identificador o PIN incorrectos.";
-            return false;
         }
-    } else {
-        qDebug() << "Error ejecutando la validación:" << query.lastError().text();
+        return true;
+    }
+    else if (modoJuego == "ModoDos") {
+        // TODO: Implementar cuando ya esten la tabla del Modo Dos
+        qDebug() << "Modo Dos no implementado todavía.";
         return false;
     }
+
+    return false;
 }
