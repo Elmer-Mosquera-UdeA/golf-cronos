@@ -8,8 +8,6 @@ Nivel::Nivel(QObject *parent)
 {
     setSceneRect(0, 0, 1366, 768);
 
-
-
     QPixmap imagenFondo(":/resources/imgs/fondo_juego_m_u.png");
     if (!imagenFondo.isNull()) {
         fondoEscalado = imagenFondo.scaled(1366, 768, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);

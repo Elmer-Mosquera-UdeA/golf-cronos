@@ -36,11 +36,11 @@ InicioWindow::InicioWindow(QWidget *parent)
     ui->stackedWidget->addWidget(pantallaModosJuego); // 3
 
 
-    JuegoModoUnoQGraphicsView *pantallaJuegoModUno = new JuegoModoUnoQGraphicsView(ui->stackedWidget);
+    JuegoModoDosQGraphicsView *pantallaJuegoModDos = new JuegoModoDosQGraphicsView(ui->stackedWidget);
 
     // 2. Añadirlo al stackedWidget
-    ui->stackedWidget->addWidget(pantallaJuegoModUno);
-    ui->stackedWidget->setCurrentWidget(pantallaJuegoModUno);
+    ui->stackedWidget->addWidget(pantallaJuegoModDos);
+    ui->stackedWidget->setCurrentWidget(pantallaJuegoModDos);
 
     // Mostramos
     // ui->stackedWidget->setCurrentIndex(0);
