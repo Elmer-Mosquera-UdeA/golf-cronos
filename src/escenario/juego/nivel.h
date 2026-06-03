@@ -7,6 +7,14 @@
 #include <QPixmap>
 #include <QPainter>
 
+
+// items
+
+class Pelota;
+class Hoyo;
+class Obstaculo;
+class Portal;
+
 class Nivel : public QGraphicsScene
 {
     Q_OBJECT
@@ -15,9 +23,25 @@ public:
     explicit Nivel(QObject *parent = nullptr);
     ~Nivel();
 
+    void limpiarNivel();
+    void cargarNivel1();
+
 private:
     QTimer *timerPrincipal;
     QPixmap fondoEscalado;
+
+    Pelota *pelota;
+    Hoyo *hoyo;
+
+    QList<Obstaculo*> obstaculos;
+    QList<Portal*> portales;
+
+    QTimer *timerPrincipal;
+    QPixmap fondoEscalado;
+
+    // Variables para el tiro con el mouse
+    bool mousePresionado;
+    QPointF puntoInicioTiro;
 
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;

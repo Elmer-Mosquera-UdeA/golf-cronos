@@ -25,13 +25,16 @@ qt_add_executable(golf-cronos
     src/escenario/widgets/portadawidget.h src/escenario/widgets/portadawidget.cpp src/escenario/widgets/portadawidget.ui
 
     src/escenario/modos_juego/juegomodounoqgraphicsview.h src/escenario/modos_juego/juegomodounoqgraphicsview.cpp
-    src/cerebro/elementojuego.h src/cerebro/elementojuego.cpp
+
     src/escenario/modos_juego/juegomododosqgraphicsview.h src/escenario/modos_juego/juegomododosqgraphicsview.cpp
     src/escenario/juego/nivel.h src/escenario/juego/nivel.cpp
     src/escenario/juego_2/nivel_d.h src/escenario/juego_2/nivel_d.cpp
     src/escenario/juego/items/pelota.h src/escenario/juego/items/pelota.cpp
     src/escenario/juego_2/items/personaje.h src/escenario/juego_2/items/personaje.cpp
     src/escenario/juego_2/items/ruedapinchos.h src/escenario/juego_2/items/ruedapinchos.cpp
+    src/escenario/juego/items/obstaculo.h src/escenario/juego/items/obstaculo.cpp
+    src/escenario/juego/items/portal.h src/escenario/juego/items/portal.cpp
+    src/escenario/juego/items/hoyo.h src/escenario/juego/items/hoyo.cpp
 )
 
 target_link_libraries(golf-cronos

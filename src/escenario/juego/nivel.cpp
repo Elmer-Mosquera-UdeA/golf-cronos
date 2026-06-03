@@ -2,6 +2,8 @@
 
 // Items de jeugo
 #include "items/pelota.h"
+#include "items/portal.h"
+#include "items/obstaculo.h"
 
 Nivel::Nivel(QObject *parent)
     : QGraphicsScene(parent)
@@ -13,10 +15,6 @@ Nivel::Nivel(QObject *parent)
         fondoEscalado = imagenFondo.scaled(1366, 768, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
 
-
-    Pelota *p_golf = new Pelota();
-    // p_golf->setPos(500, 400);
-    this->addItem(p_golf);
 
     timerPrincipal = new QTimer(this);
     connect(timerPrincipal, &QTimer::timeout, this, &Nivel::actualizarJuego);
