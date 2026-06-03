@@ -2,13 +2,9 @@
 #define NIVEL_H
 
 #include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QPixmap>
 #include <QPainter>
-
-
-// items
 
 class Pelota;
 class Hoyo;
@@ -26,10 +22,10 @@ public:
     void limpiarNivel();
     void cargarNivel1();
 
-private:
-    QTimer *timerPrincipal;
-    QPixmap fondoEscalado;
+public slots:
+    void aplicarFuerzaTiro(const QPointF &origen, const QPointF &vector);
 
+private:
     Pelota *pelota;
     Hoyo *hoyo;
 
@@ -39,18 +35,10 @@ private:
     QTimer *timerPrincipal;
     QPixmap fondoEscalado;
 
-    // Variables para el tiro con el mouse
-    bool mousePresionado;
     QPointF puntoInicioTiro;
 
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
-
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private slots:
     void actualizarJuego();
