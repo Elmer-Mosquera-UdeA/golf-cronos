@@ -32,6 +32,21 @@ qt_add_executable(golf-cronos
     src/escenario/juego/items/pelota.h src/escenario/juego/items/pelota.cpp
     src/escenario/juego_2/items/personaje.h src/escenario/juego_2/items/personaje.cpp
     src/escenario/juego_2/items/ruedapinchos.h src/escenario/juego_2/items/ruedapinchos.cpp
+    src/escenario/juego_2/items/pelotaroja.h src/escenario/juego_2/items/pelotaroja.cpp
+    src/escenario/juego_2/items/agenteia.h src/escenario/juego_2/items/agenteia.cpp
+    src/escenario/juego_2/items/centrodepoder.h src/escenario/juego_2/items/centrodepoder.cpp
+    src/escenario/juego_2/items/cratergris.h src/escenario/juego_2/items/cratergris.cpp
+    src/escenario/juego_2/items/craterrojo.h src/escenario/juego_2/items/craterrojo.cpp
+    src/escenario/juego_2/items/craterhielo.h src/escenario/juego_2/items/craterhielo.cpp
+    src/escenario/juego_2/items/cronometrotiempo.h src/escenario/juego_2/items/cronometrotiempo.cpp
+    src/escenario/juego_2/items/bandera.h src/escenario/juego_2/items/bandera.cpp
+    src/escenario/juego_2/items/momentopelota.h src/escenario/juego_2/items/momentopelota.cpp
+    src/escenario/juego_2/items/pelotablanca.h src/escenario/juego_2/items/pelotablanca.cpp
+    src/escenario/juego_2/items/portal.h src/escenario/juego_2/items/portal.cpp
+    src/escenario/juego_2/items/remolinometa.h src/escenario/juego_2/items/remolinometa.cpp
+    src/escenario/juego_2/items/logrosvidas.h src/escenario/juego_2/items/logrosvidas.cpp
+
+
 )
 
 target_link_libraries(golf-cronos

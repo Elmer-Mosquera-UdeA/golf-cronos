@@ -1,10 +1,23 @@
 #include "nivel_d.h"
 
+
 // Items de jeugo
 // #include "../juego/items/pelota.h"
 #include "items/personaje.h"
 #include "items/ruedapinchos.h"
-
+#include "items/pelotaroja.h"
+#include "agenteia.h"
+#include "bandera.h"
+#include "centrodepoder.h"
+#include "cratergris.h"
+#include "craterhielo.h"
+#include "craterrojo.h"
+#include "cronometrotiempo.h"
+#include "logrosvidas.h"
+#include "momentopelota.h"
+#include "pelotablanca.h"
+#include "portal.h"
+#include "remolinometa.h"
 
 // CONSTRUCTOR
 Nivel_D::Nivel_D(QObject *parent)
@@ -19,8 +32,8 @@ Nivel_D::Nivel_D(QObject *parent)
 
 
 
-    Personaje *personaje1 = new Personaje;
-    this->addItem(personaje1);
+    PelotaRoja *pelotaRoja = new PelotaRoja;
+    this->addItem(pelotaRoja);
 
 
     RuedaPinchos *rueda1 = new RuedaPinchos;

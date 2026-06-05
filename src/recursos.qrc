@@ -12,5 +12,7 @@
         <file>resources/imgs/pelota-golf.png</file>
         <file>resources/imgs/pendulo.png</file>
         <file>resources/imgs/rueda_pinchos.png</file>
+        <file>resources/imgs/pelota_roja.png</file>
+        <file>resources/imgs/Agente-IA.png</file>
     </qresource>
 </RCC>
